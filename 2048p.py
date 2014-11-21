@@ -28,7 +28,6 @@ vetores = {
 tamanho = 4
 blocosIniciais = 2
 
-
 def erro():
     return ValueError(inspect.stack()[1][3]+": argumentos invalidos")
 
@@ -37,28 +36,23 @@ def cria_coordenada(x, y):
         raise erro()
     return (x, y)
 
-
 def e_coordenada(coordenada):
     return filtros["coordenada"](coordenada)
-
 
 def coordenada_linha(coordenada):
     if not e_coordenada(coordenada):
         raise erro()
     return coordenada[0]
 
-
 def coordenada_coluna(coordenada):
     if not e_coordenada(coordenada):
         raise erro()
     return coordenada[1]
 
-
 def coordenada_igual(coordenada1, coordenada2):
     if not e_coordenada(coordenada1) or not e_coordenada(coordenada2):
         raise erro()
     return coordenada1 == coordenada2
-
 
 def cria_tabuleiro():
     tabuleiro = []
@@ -68,29 +62,24 @@ def cria_tabuleiro():
             tabuleiro[x].append(0)
     return [0, tabuleiro]
 
-
 def tabuleiro_pontuacao(tabuleiro):
     if not e_tabuleiro(tabuleiro):
         raise erro()
     return tabuleiro[0]
-
 
 def tabuleiro_posicao(tabuleiro, coordenada):
     if not e_tabuleiro(tabuleiro) or not e_coordenada(coordenada):
         raise erro()
     return tabuleiro[1][coordenada_linha(coordenada) - 1][coordenada_coluna(coordenada) - 1]
 
-
 def tabuleiro_posicoes_vazias(tabuleiro):
     return tabuleiro_filtra_blocos(tabuleiro, filtros["vazios"])
-
 
 def tabuleiro_preenche_posicao(tabuleiro, coordenada, bloco):
     if not e_tabuleiro(tabuleiro) or not e_coordenada(coordenada) or not filtros["bloco"](bloco):
         raise erro()
     tabuleiro[1][coordenada_linha(coordenada) - 1][coordenada_coluna(coordenada) - 1] = bloco
     return tabuleiro
-
 
 def tabuleiro_preenche_aleatorio(tabuleiro):
     if not e_tabuleiro(tabuleiro):
@@ -100,23 +89,19 @@ def tabuleiro_preenche_aleatorio(tabuleiro):
     bloco = 2 if random() < 0.80 else 4
     return tabuleiro_preenche_posicao(tabuleiro, coordenada, bloco)
 
-
 def tabuleiro_actualiza_pontuacao(tabuleiro, pontuacao):
     if not e_tabuleiro(tabuleiro) or not filtros["bloco"](pontuacao):
         raise erro()
     tabuleiro[0] = tabuleiro_pontuacao(tabuleiro) + pontuacao
     return tabuleiro
 
-
 def e_tabuleiro(tabuleiro):
     return filtros["tabuleiro"](tabuleiro)
-
 
 def tabuleiros_iguais(tabuleiro1, tabuleiro2):
     if not e_tabuleiro(tabuleiro1) or not e_tabuleiro(tabuleiro2):
         raise erro()
     return tabuleiro1 == tabuleiro2
-
 
 def escreve_tabuleiro(tabuleiro):
     if not e_tabuleiro(tabuleiro):
@@ -126,7 +111,6 @@ def escreve_tabuleiro(tabuleiro):
             print("[ " + str(tabuleiro_posicao(tabuleiro, cria_coordenada(x, y))) + " ]", end=" ")
         print()
     print("Pontuacao:", tabuleiro_pontuacao(tabuleiro))
-
 
 def tabuleiro_jogada_possivel(tabuleiro, jogadas="N,S,E,W"):
     if not e_tabuleiro(tabuleiro) or not filtros["jogada"](jogadas):
@@ -155,12 +139,10 @@ def tabuleiro_filtra_blocos(tabuleiro, filtro):
                 coordenadas.append(cria_coordenada(x, y))
     return coordenadas
 
-
 def tabuleiro_terminado(tabuleiro):
     if not e_tabuleiro(tabuleiro):
         raise erro()
     return len(tabuleiro_posicoes_vazias(tabuleiro)) == 0 and not tabuleiro_jogada_possivel(tabuleiro)
-
 
 def tabuleiro_adiciona_blocos_inicias(tabuleiro):
     for i in range(0, blocosIniciais):
@@ -174,8 +156,61 @@ def pede_jogada():
         return pede_jogada()
     return jogada
 
-tabuleiro = cria_tabuleiro()
-tabuleiro1 = copy.deepcopy(tabuleiro)
-tabuleiro_adiciona_blocos_inicias(tabuleiro)
-escreve_tabuleiro(tabuleiro)
-escreve_tabuleiro(tabuleiro1)
+def tabuleiro_reduz(tabuleiro, jogada, junta=True):
+    if not e_tabuleiro(tabuleiro) or not filtros["jogada"](jogada):
+        raise erro()
+    if tabuleiro_jogada_possivel(tabuleiro, jogada):
+        trocaColuna = True
+        while trocaColuna:
+            trocaColuna = False
+            for x in range(1,tamanho+1):
+                trocaLinha = True
+                while trocaLinha:
+                    trocaLinha = False
+                    for y in range(tamanho, 0, -1):
+                        atual = cria_coordenada(x, y)
+                        blocoAtual = tabuleiro_posicao(tabuleiro, atual)
+                        try:
+                            vizinho = cria_coordenada(x+vetores[jogada]["x"], y+vetores[jogada]["y"])
+                            blocoVizinho = tabuleiro_posicao(tabuleiro, vizinho)
+                            if blocoVizinho == 0 and blocoAtual != 0:
+                                tabuleiro_preenche_posicao(tabuleiro, vizinho, blocoAtual)
+                                tabuleiro_preenche_posicao(tabuleiro, atual, 0)
+
+                                if coordenada_linha(atual) != coordenada_linha(vizinho):trocaColuna = True
+                                else: trocaLinha = True 
+                        except ValueError:
+                            continue
+
+        if junta:
+            # Se tivermos da da direita para a esquerda ou de cima para baixo temos que usar outro iterador
+            iterador = range(1, tamanho+1) if vetores[jogada]["x"]+vetores[jogada]["y"] < 0 else range(tamanho, 0, -1)
+            for x in iterador:
+                for y in iterador:
+                    atual = cria_coordenada(x, y)
+                    blocoAtual = tabuleiro_posicao(tabuleiro, atual)
+                    try:
+                        vizinho = cria_coordenada(x+vetores[jogada]["x"], y+vetores[jogada]["y"])
+                        blocoVizinho = tabuleiro_posicao(tabuleiro, vizinho)
+                        if blocoVizinho == blocoAtual:
+                            novoBloco = blocoAtual+blocoVizinho
+                            tabuleiro_preenche_posicao(tabuleiro, vizinho, novoBloco)
+                            tabuleiro_preenche_posicao(tabuleiro, atual, 0)
+                            tabuleiro_actualiza_pontuacao(tabuleiro, novoBloco)
+                    except ValueError:
+                        continue     
+            return tabuleiro_reduz(tabuleiro, jogada, False)
+    return tabuleiro
+
+def jogo_2048():
+    tabuleiro = cria_tabuleiro()
+    tabuleiro_adiciona_blocos_inicias(tabuleiro)
+    while not tabuleiro_terminado(tabuleiro):
+        escreve_tabuleiro(tabuleiro)
+        jogada = pede_jogada()
+        if tabuleiro_jogada_possivel(tabuleiro, jogada):
+            tabuleiro_reduz(tabuleiro, jogada)
+            tabuleiro_preenche_aleatorio(tabuleiro)
+    print("GAME OVERR!!")
+
+jogo_2048()
