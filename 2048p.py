@@ -1,5 +1,4 @@
 from random import random
-import copy
 import inspect
 
 filtros = {
@@ -13,7 +12,7 @@ filtros = {
         lambda x: isinstance(x, list) and len(x) == 2 and isinstance(x[0], int) and isinstance(x[1], list) and len(
             x[1])==tamanho and all(isinstance(num, int) and len(linha) == tamanho for linha in x[1] for num in linha),
     "jogada": 
-        lambda x: isinstance(x, str) and all(jogada in ("N", "S", "W", "E") for jogada in x.split(",")),
+        lambda x: isinstance(x, str) and all(jogada in vetores for jogada in x.split(",")),
     "vazios":
         lambda x: x == 0,
     "disponiveis":
@@ -27,6 +26,7 @@ vetores = {
 }
 tamanho = 4
 blocosIniciais = 2
+blocoVencedor = 2048
 
 def erro():
     return ValueError(inspect.stack()[1][3]+": argumentos invalidos")
@@ -144,17 +144,13 @@ def tabuleiro_terminado(tabuleiro):
         raise erro()
     return len(tabuleiro_posicoes_vazias(tabuleiro)) == 0 and not tabuleiro_jogada_possivel(tabuleiro)
 
+def tabuleiro_ganhou_jogo(t):
+    return any(blocoVencedor==tabuleiro_posicao(t, c) for c in tabuleiro_filtra_blocos(t, filtros["disponiveis"]))
+
 def tabuleiro_adiciona_blocos_inicias(tabuleiro):
     for i in range(0, blocosIniciais):
         tabuleiro_preenche_aleatorio(tabuleiro)
     return tabuleiro
-
-def pede_jogada():
-    jogada = input("Introduza uma jogada (N, S, E, W): ")
-    if not filtros["jogada"](jogada):
-        print("Jogada invalida.")
-        return pede_jogada()
-    return jogada
 
 def tabuleiro_reduz(tabuleiro, jogada, junta=True):
     if not e_tabuleiro(tabuleiro) or not filtros["jogada"](jogada):
@@ -202,6 +198,13 @@ def tabuleiro_reduz(tabuleiro, jogada, junta=True):
             return tabuleiro_reduz(tabuleiro, jogada, False)
     return tabuleiro
 
+def pede_jogada():
+    jogada = input("Introduza uma jogada (N, S, E, W): ")
+    if not filtros["jogada"](jogada):
+        print("Jogada invalida.")
+        return pede_jogada()
+    return jogada
+
 def jogo_2048():
     tabuleiro = cria_tabuleiro()
     tabuleiro_adiciona_blocos_inicias(tabuleiro)
@@ -211,6 +214,7 @@ def jogo_2048():
         if tabuleiro_jogada_possivel(tabuleiro, jogada):
             tabuleiro_reduz(tabuleiro, jogada)
             tabuleiro_preenche_aleatorio(tabuleiro)
-    print("GAME OVERR!!")
+    escreve_tabuleiro(tabuleiro)
+    print("GAME OVERRRR!!")
 
 jogo_2048()
