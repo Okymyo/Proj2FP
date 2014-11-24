@@ -1,4 +1,5 @@
 import random
+import copy
 from random import random
 import interface
 
@@ -88,7 +89,7 @@ def tabuleiro_preenche_aleatorio(tabuleiro):
         raise erro()
     vazias = tabuleiro_posicoes_vazias(tabuleiro)
     coordenada = vazias[int(random() * len(vazias))]
-    bloco = 2 if random() < 0.80 else 4
+    bloco = 2 if random() < 0.90 else 4
     return tabuleiro_preenche_posicao(tabuleiro, coordenada, bloco)
 
 def tabuleiro_actualiza_pontuacao(tabuleiro, pontuacao):
@@ -218,27 +219,100 @@ def desenha_tabuleiro(w, t):
 def desenha_score(w, t):
     w.draw_score(tabuleiro_pontuacao(t), 245, 165)
         
+def bot(t):
+    if not tabuleiro_jogada_possivel(t, "N"):
+        if tabuleiro_jogada_possivel(t, "E") and tabuleiro_jogada_possivel(t, "W"):
+            leftUp = copy.deepcopy(t)
+            rightUp = copy.deepcopy(t)
+            tabuleiro_reduz(leftUp, "W")
+            tabuleiro_reduz(leftUp, "N")
+            tabuleiro_reduz(rightUp, "E")
+            tabuleiro_reduz(rightUp, "N")
+            if len(tabuleiro_posicoes_vazias(leftUp)) > len(tabuleiro_posicoes_vazias(rightUp)):
+                return "W"
+            return "E"
+        elif tabuleiro_jogada_possivel(t, "W"):
+            return "W"
+        elif tabuleiro_jogada_possivel(t, "E"):
+            return "E"
+        else:
+            return "S"
+    return "N"
+
+def nextMove(board,recursion_depth=3):
+    def nextMoveRecur(board,depth,maxDepth,base=0.9):
+        bestScore = -1.
+        bestMove = 0
+        for m in vetores:
+            if(tabuleiro_jogada_possivel(board, m)):
+                newBoard = copy.deepcopy(board)
+                tabuleiro_reduz(newBoard, m)
+                tabuleiro_preenche_aleatorio(newBoard)
+                 
+                score = tabuleiro_pontuacao(newBoard)
+                if depth != 0:
+                    my_m,my_s = nextMoveRecur(newBoard,depth-1,maxDepth)
+                    score += my_s*pow(base,maxDepth-depth+1)
+                     
+                if(score > bestScore):
+                    bestMove = m
+                    bestScore = score
+        return (bestMove,bestScore);
+    m,s = nextMoveRecur(board,recursion_depth,recursion_depth)
+    return m
+
+def tabuleiro_ganhou_jogo(t):
+    return any(2048==tabuleiro_posicao(t, c) for c in tabuleiro_filtra_blocos(t, filtros["disponiveis"]))
+
+
 def joga_2048():
     '''...'''
-
-    t = cria_tabuleiro()
-    tabuleiro_adiciona_blocos_inicias(t)
-    w = interface.window_2048()
      
+    def loop():
+        t = cria_tabuleiro()
+        tabuleiro_adiciona_blocos_inicias(t)
+        quit = False
+        while not quit:
+            jogada = w.get_play()
+            if jogada == "Q":
+                return "Q"
+
+            desenha_tabuleiro(w, t)
+
+            while not quit and not tabuleiro_ganhou_jogo(t):
+                desenha_tabuleiro(w, t)
+                desenha_score(w, t)
+
+                jogada = w.get_play()
+                if jogada == "Q":
+                    return "Q"
+
+                play = nextMove(t,2)
+                if filtros["jogada"](play):
+                    if tabuleiro_jogada_possivel(t, play):
+                        tabuleiro_reduz(t, play)
+                        tabuleiro_preenche_aleatorio(t)
+
+                if tabuleiro_terminado(t):
+                    break
+
+                w.step()
+
+            if tabuleiro_terminado(t):
+                break
+        return None
+
+    times = 1
+    w = interface.window_2048()
     quit = False
     while not quit:
-        desenha_tabuleiro(w, t)
-        desenha_score(w, t)
-        jogada = w.get_play()
-        if jogada == 'Q':
+        state = loop()
+        if state == None:
+            times+=1
+        if state == "Q":
             quit = True
-        if filtros["jogada"](jogada):
-            if tabuleiro_jogada_possivel(t, jogada):
-                tabuleiro_reduz(t, jogada)
-                tabuleiro_preenche_aleatorio(t)
-        w.step()
 
-    print('Jogo terminado.')
+    print('Jogo terminado. Foi executado', times, "vez(es)!")
     
 if __name__ == "__main__":
     joga_2048()
