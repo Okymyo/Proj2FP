@@ -80,7 +80,7 @@ def coordenada_coluna(coordenada):
         raise erro()
     return coordenada[1]
     
-def coordenada_igual(coordenada1, coordenada2):
+def coordenadas_igual(coordenada1, coordenada2):
     '''
     Verifica se ambas as coordenadas sao iguais
     :param coordenada1: Primeira coordenada a comparar : Coordenada
@@ -395,4 +395,11 @@ def jogo_2048():
             tabuleiro_reduz(t, j)
             tabuleiro_preenche_aleatorio(t)
 
-jogo_2048()
+
+t = cria_tabuleiro()
+escreve_tabuleiro(t)
+c = cria_coordenada(2, 2)
+escreve_tabuleiro(tabuleiro_preenche_posicao(t, c, 2))
+c = cria_coordenada(2, 4)
+escreve_tabuleiro(tabuleiro_preenche_posicao(t, c, 2))
+print(e_tabuleiro(t))
