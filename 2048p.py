@@ -331,10 +331,9 @@ def tabuleiro_reduz(tabuleiro, jogada):
 
     if not e_tabuleiro(tabuleiro) or not filtros["jogada"](jogada):
         raise erro()
-    if tabuleiro_jogada_possivel(tabuleiro, jogada):
-        empurra()
-        junta()
-        empurra()
+    empurra()
+    junta()
+    empurra()
     return tabuleiro
 
 def pede_jogada():
