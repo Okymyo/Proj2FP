@@ -1,3 +1,5 @@
+# Grupo 10
+# Andr? Mendes n?82047, Jo?o Genebra n?82007, Nuno Anselmo n?81900
 from random import random
 from copy import deepcopy
 from inspect import stack
