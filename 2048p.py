@@ -12,7 +12,7 @@ filtros = {
         lambda x: isinstance(x, list) and len(x) == 2 and isinstance(x[0], int) and isinstance(x[1], list) and len(
             x[1])==tamanho and all(isinstance(num, int) and len(linha) == tamanho for linha in x[1] for num in linha),
     "jogada": 
-        lambda x: isinstance(x, str) and all(jogada in vetores for jogada in x.split(",")),
+        lambda x: isinstance(x, str) and all(jogada in vetores for jogada in x.split(tokenJogadas)),
     "vazios":
         lambda x: x == 0,
     "disponiveis":
@@ -30,6 +30,7 @@ tamanho = 4
 blocosIniciais = 2
 probabilidadeBlocoDois = 0.8
 blocoVencedor = 2048
+tokenJogadas = ","
 
 def erro():
     return ValueError(inspect.stack()[1][3]+": argumentos invalidos")
@@ -180,7 +181,7 @@ def tabuleiro_jogada_possivel(tabuleiro, jogadas="N,S,E,W"):
         raise erro()
     disponiveis = tabuleiro_filtra_blocos(tabuleiro, filtros["disponiveis"])
     for atual in disponiveis:
-        for jogada in jogadas.split(","):
+        for jogada in jogadas.split(tokenJogadas):
             blocoAtual = tabuleiro_posicao(tabuleiro, atual)
             try:
                 x,y = coordenada_linha(atual), coordenada_coluna(atual)
@@ -330,3 +331,5 @@ def jogo_2048():
         if tabuleiro_jogada_possivel(t, j):
             tabuleiro_reduz(t, j)
             tabuleiro_preenche_aleatorio(t)
+
+jogo_2048()
