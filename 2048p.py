@@ -1,5 +1,6 @@
 from random import random
-import inspect
+from copy import deepcopy
+from inspect import stack
 
 filtros = {
     "coordenadas": 
@@ -7,7 +8,9 @@ filtros = {
     "coordenada": 
         lambda x: isinstance(x, tuple) and len(x) == 2 and all(isinstance(num, int) for num in x),
     "bloco": 
-        lambda x: isinstance(x, int) and x >= 0 and x%4==0,
+        lambda x: isinstance(x, int) and ((x & (x - 1)) == 0),
+    "pontuacao":
+        lambda x: isinstance(x, int) and x>=0 and x%4==0,
     "tabuleiro": 
         lambda x: isinstance(x, list) and len(x) == 2 and isinstance(x[0], int) and isinstance(x[1], list) and len(
             x[1])==tamanho and all(isinstance(num, int) and len(linha) == tamanho for linha in x[1] for num in linha),
@@ -20,19 +23,21 @@ filtros = {
     "vencedor":
         lambda x : x == blocoVencedor
 }
+
 vetores = {
     "N": {"x": -1, "y": 0},
     "S": {"x": 1, "y": 0},
     "E": {"x": 0, "y": 1},
     "W": {"x": 0, "y": -1}
 }
+
 tamanho = 4
 blocosIniciais = 2
 probabilidadeBlocoDois = 0.8
 blocoVencedor = 2048
 
 def erro():
-    return ValueError(inspect.stack()[1][3]+": argumentos invalidos")
+    return ValueError(stack()[1][3]+": argumentos invalidos")
 
 def cria_coordenada(x, y):
     '''
@@ -339,6 +344,34 @@ def pede_jogada():
         print("Jogada invalida.")
         return pede_jogada()
     return jogada
+
+def nextMove(board,recursion_depth=3):
+    '''
+    Avalia a proxima jogada a executar consoante o tabuleiro atual e uma previsao do futuro
+    :param board: Tabuleiro a avaliar : Tabuleiro
+    :param recursion_depth: Depth do algoritmo, quantos tabuleiros tentamos prever : int
+    :return: Melhor jogada, a que avalia qual da o melhor score depois de feita : string
+    '''
+    def nextMoveRecur(board,depth,maxDepth,base=0.9):
+        bestScore = -1.
+        bestMove = 0
+        for m in vetores:
+            if(tabuleiro_jogada_possivel(board, m)):
+                newBoard = deepcopy(board)
+                tabuleiro_reduz(newBoard, m)
+                tabuleiro_preenche_aleatorio(newBoard)
+
+                score = tabuleiro_pontuacao(newBoard)
+                if depth != 0:
+                    my_m,my_s = nextMoveRecur(newBoard,depth-1,maxDepth)
+                    score += my_s*pow(base,maxDepth-depth+1)
+
+                if(score > bestScore):
+                    bestMove = m
+                    bestScore = score
+        return (bestMove,bestScore)
+    m,s = nextMoveRecur(board,recursion_depth,recursion_depth)
+    return m
 
 def jogo_2048():
     '''
