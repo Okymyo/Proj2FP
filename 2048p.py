@@ -12,7 +12,7 @@ filtros = {
         lambda x: isinstance(x, list) and len(x) == 2 and isinstance(x[0], int) and isinstance(x[1], list) and len(
             x[1])==tamanho and all(isinstance(num, int) and len(linha) == tamanho for linha in x[1] for num in linha),
     "jogada": 
-        lambda x: isinstance(x, str) and all(jogada in vetores for jogada in x.split(tokenJogadas)),
+        lambda x: isinstance(x, str) and x in vetores,
     "vazios":
         lambda x: x == 0,
     "disponiveis":
@@ -30,7 +30,6 @@ tamanho = 4
 blocosIniciais = 2
 probabilidadeBlocoDois = 0.8
 blocoVencedor = 2048
-tokenJogadas = ","
 
 def erro():
     return ValueError(inspect.stack()[1][3]+": argumentos invalidos")
@@ -177,11 +176,13 @@ def tabuleiro_jogada_possivel(tabuleiro, jogadas="N,S,E,W"):
     :param jogadas: Jogadas separadas por virgula a averiguar se sao ou nao possiveis num dado tabuleiro : string
     :return: True se qualquer uma das jogadas for possivel, caso contrario False : boolean
     '''
-    if not e_tabuleiro(tabuleiro) or not filtros["jogada"](jogadas):
+    if not e_tabuleiro(tabuleiro):
         raise erro()
     disponiveis = tabuleiro_filtra_blocos(tabuleiro, filtros["disponiveis"])
     for atual in disponiveis:
-        for jogada in jogadas.split(tokenJogadas):
+        for jogada in jogadas.split(","):
+            if not filtros["jogada"](jogada):
+                raise erro()
             blocoAtual = tabuleiro_posicao(tabuleiro, atual)
             try:
                 x,y = coordenada_linha(atual), coordenada_coluna(atual)
