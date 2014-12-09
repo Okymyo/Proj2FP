@@ -44,14 +44,14 @@ blocoVencedor = 2048
 def erro():
     return ValueError(stack()[1][3]+": argumentos invalidos")
 
-def cria_coordenada(x, y):
+def cria_coordenada(x, y, override=False):
     '''
     Cria nova coordenada com os parametros dados
     :param x: Linha da coordenada a criar : int
     :param y: Coluna da coordenada a criar : int
     :return: Coordenada criada a partir dos parametros que foram dados : Coordenada
     '''
-    if not filtros["coordenadas"](x, y):
+    if not filtros["coordenadas"](x, y) and not override:
         raise erro()
     return (x, y)
     
@@ -297,16 +297,14 @@ def tabuleiro_reduz(tabuleiro, jogada):
                     for y in range(tamanho, 0, -1):
                         atual = cria_coordenada(x, y)
                         blocoAtual = tabuleiro_posicao(tabuleiro, atual)
-                        try:
-                            vizinho = cria_coordenada(x+vetores[jogada]["x"], y+vetores[jogada]["y"])
+                        vizinho = cria_coordenada(x+vetores[jogada]["x"], y+vetores[jogada]["y"], True)
+                        if e_coordenada(vizinho):
                             blocoVizinho = tabuleiro_posicao(tabuleiro, vizinho)
                             if blocoVizinho == 0 and blocoAtual != 0:
                                 tabuleiro_preenche_posicao(tabuleiro, vizinho, blocoAtual)
                                 tabuleiro_preenche_posicao(tabuleiro, atual, 0)
                                 if coordenada_linha(atual) != coordenada_linha(vizinho):trocaColuna = True
                                 else: trocaLinha = True
-                        except ValueError:
-                            continue
         return tabuleiro
 
     def junta():
@@ -319,16 +317,14 @@ def tabuleiro_reduz(tabuleiro, jogada):
             for y in iterador:
                 atual = cria_coordenada(x, y)
                 blocoAtual = tabuleiro_posicao(tabuleiro, atual)
-                try:
-                    vizinho = cria_coordenada(x+vetores[jogada]["x"], y+vetores[jogada]["y"])
+                vizinho = cria_coordenada(x+vetores[jogada]["x"], y+vetores[jogada]["y"], True)
+                if e_coordenada(vizinho):
                     blocoVizinho = tabuleiro_posicao(tabuleiro, vizinho)
                     if blocoVizinho == blocoAtual:
                         novoBloco = blocoAtual+blocoVizinho
                         tabuleiro_preenche_posicao(tabuleiro, vizinho, novoBloco)
                         tabuleiro_preenche_posicao(tabuleiro, atual, 0)
                         tabuleiro_actualiza_pontuacao(tabuleiro, novoBloco)
-                except ValueError:
-                    continue
         return tabuleiro
 
     if not e_tabuleiro(tabuleiro) or not filtros["jogada"](jogada):
@@ -404,3 +400,6 @@ def benchmark(repeticoes, testes, funcao, *parametros):
             funcao(*parametros)
         print(time.time() - start)
     return 'Corridos ' + str(repeticoes * testes) + ' testes, com total de ' + str(time.time() - start_all) + ' segundos'
+        
+tab = [1337, [[8, 2, 2, 0], [4, 128, 64, 4], [32, 64, 2, 32], [16, 2, 4, 4]]]
+print(benchmark(4, 100, tabuleiro_reduz, tab, "S"))
