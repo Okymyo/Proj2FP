@@ -8,7 +8,8 @@ filtros = {
     "coordenadas": 
         lambda x, y: isinstance(x, int) and isinstance(y,int) and x > 0 and x <= tamanho and y > 0 and y <= tamanho,
     "coordenada": 
-        lambda x: isinstance(x, tuple) and len(x) == 2 and filtros["coordenadas"](x[0], x[1]) and all(isinstance(num, int) for num in x),
+        lambda x: isinstance(x, tuple) and len(x) == 2 and filtros["coordenadas"](x[0], x[1]) 
+        and all(isinstance(num, int) for num in x),
     "bloco": 
         lambda x: isinstance(x, int) and ((x & (x - 1)) == 0),
     "pontuacao":
@@ -381,15 +382,9 @@ def jogo_2048():
     :return: None
     '''
     t = cria_tabuleiro()
-    q = False
     tabuleiro_adiciona_blocos_inicias(t)
     while not(tabuleiro_terminado(t)):
         escreve_tabuleiro(t)
-        if tabuleiro_ganhou_jogo(t) and not q:
-            w = input('Ganhou!!! Prima qualquer tecla para continuar ou "N" para parar -> ')
-            if w == 'N':
-                break
-            q = True
         j = pede_jogada() #Para a utilizacao de inteligencia artificial escrever "j = nextMove(t, recursionDepth)"
         if tabuleiro_jogada_possivel(t, j):
             tabuleiro_reduz(t, j)
