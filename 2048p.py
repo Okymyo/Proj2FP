@@ -35,25 +35,52 @@ def erro():
     return ValueError(inspect.stack()[1][3]+": argumentos invalidos")
 
 def cria_coordenada(x, y):
+    '''
+    Cria nova coordenada com os parametros dados
+    :param x: Linha da coordenada a criar : int
+    :param y: Coluna da coordenada a criar : int
+    :return: Coordenada criada a partir dos parametros que foram dados : Coordenada
+    '''
     if not filtros["coordenadas"](x, y):
         raise erro()
     return (x, y)
-
+    
 def e_coordenada(coordenada):
+    '''
+    Verifica se a coordenada dada respeita a definicao de coordenada
+    :param coordenada: Coordenada a verificar : Coordenada
+    :return: True se for uma coordenada, False se nao o for : boolean
+    '''    
     return filtros["coordenada"](coordenada)
-
+    
 def coordenada_linha(coordenada):
+    '''
+    Retorna a linha da coordenada dada
+    :param coordenada: Coordenada a qual se obtem a linha : Coordenada
+    :return: Linha da coordenada dada como parametro : int
+    '''    
     if not e_coordenada(coordenada):
         raise erro()
     return coordenada[0]
-
+    
 def coordenada_coluna(coordenada):
+    '''
+    Retorna a coluna da coordenada dada
+    :param coordenada: Coordenada a qual se obtem a coluna : Coordenada
+    :return: Coluna da coordenada dada como parametro : int
+    '''
     if not e_coordenada(coordenada):
         raise erro()
     return coordenada[1]
-
+    
 def coordenada_igual(coordenada1, coordenada2):
-    if not e_coordenada(coordenada1) or not e_coordenada(coordenada2):
+    '''
+    Verifica se ambas as coordenadas sao iguais
+    :param coordenada1: Primeira coordenada a comparar : Coordenada
+    :param coordenada2: Coordenada com a qual se compara a primeira : Coordenada
+    :return: True se ambas as coordenadas foram de facto iguais, False se nao o forem : boolean
+    '''    
+    if not(e_coordenada(coordenada1) and e_coordenada(coordenada2)):
         raise erro()
     return coordenada1 == coordenada2
 
