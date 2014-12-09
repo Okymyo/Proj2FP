@@ -165,7 +165,7 @@ def tabuleiro_actualiza_pontuacao(tabuleiro, pontuacao):
     :param pontuacao: Pontuacao a somar a posicao atual do tabuleiro : int
     :return: Tabuleiro atualizado com a nova pontuacao : Tabuleiro
     '''
-    if not e_tabuleiro(tabuleiro) or not filtros["bloco"](pontuacao):
+    if not e_tabuleiro(tabuleiro) or not filtros["pontuacao"](pontuacao):
         raise erro()
     tabuleiro[0] = tabuleiro_pontuacao(tabuleiro) + pontuacao
     return tabuleiro
