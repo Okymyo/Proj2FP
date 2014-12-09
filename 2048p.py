@@ -7,7 +7,7 @@ filtros = {
     "coordenada": 
         lambda x: isinstance(x, tuple) and len(x) == 2 and all(isinstance(num, int) for num in x),
     "bloco": 
-        lambda x: isinstance(x, int) and x >= 0 and ((x & (x - 1)) == 0),
+        lambda x: isinstance(x, int) and x >= 0 and x%4==0,
     "tabuleiro": 
         lambda x: isinstance(x, list) and len(x) == 2 and isinstance(x[0], int) and isinstance(x[1], list) and len(
             x[1])==tamanho and all(isinstance(num, int) and len(linha) == tamanho for linha in x[1] for num in linha),
