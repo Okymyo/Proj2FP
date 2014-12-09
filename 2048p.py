@@ -49,6 +49,7 @@ def cria_coordenada(x, y, override=False):
     Cria nova coordenada com os parametros dados
     :param x: Linha da coordenada a criar : int
     :param y: Coluna da coordenada a criar : int
+    :param override: Caso este parametro esteja True, nunca da erro
     :return: Coordenada criada a partir dos parametros que foram dados : Coordenada
     '''
     if not filtros["coordenadas"](x, y) and not override:
@@ -297,6 +298,8 @@ def tabuleiro_reduz(tabuleiro, jogada):
                     for y in range(tamanho, 0, -1):
                         atual = cria_coordenada(x, y)
                         blocoAtual = tabuleiro_posicao(tabuleiro, atual)
+                        # Vamos usar o override da funcao cria_coordenada para nao devolver erro
+                        # Usa-se depois o e_coordenada, e assim caso seja invalida, devolve False (em vez de erro)
                         vizinho = cria_coordenada(x+vetores[jogada]["x"], y+vetores[jogada]["y"], True)
                         if e_coordenada(vizinho):
                             blocoVizinho = tabuleiro_posicao(tabuleiro, vizinho)
@@ -317,6 +320,8 @@ def tabuleiro_reduz(tabuleiro, jogada):
             for y in iterador:
                 atual = cria_coordenada(x, y)
                 blocoAtual = tabuleiro_posicao(tabuleiro, atual)
+                # Vamos usar o override da funcao cria_coordenada para nao devolver erro
+                # Usa-se depois o e_coordenada, e assim caso seja invalida, devolve False (em vez de erro)               
                 vizinho = cria_coordenada(x+vetores[jogada]["x"], y+vetores[jogada]["y"], True)
                 if e_coordenada(vizinho):
                     blocoVizinho = tabuleiro_posicao(tabuleiro, vizinho)
