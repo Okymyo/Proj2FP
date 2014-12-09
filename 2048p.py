@@ -80,7 +80,7 @@ def coordenada_coluna(coordenada):
         raise erro()
     return coordenada[1]
     
-def coordenadas_igual(coordenada1, coordenada2):
+def coordenadas_iguais(coordenada1, coordenada2):
     '''
     Verifica se ambas as coordenadas sao iguais
     :param coordenada1: Primeira coordenada a comparar : Coordenada
