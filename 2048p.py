@@ -301,6 +301,10 @@ def tabuleiro_reduz(tabuleiro, jogada):
     return tabuleiro
 
 def pede_jogada():
+    '''
+    Pede uma jogada ao jogador
+    :return: Jogada dada se esta for valida : string
+    '''
     jogada = input("Introduza uma jogada (N, S, E, W): ")
     if not filtros["jogada"](jogada):
         print("Jogada invalida.")
@@ -308,15 +312,21 @@ def pede_jogada():
     return jogada
 
 def jogo_2048():
-    tabuleiro = cria_tabuleiro()
-    tabuleiro_adiciona_blocos_inicias(tabuleiro)
-    while not tabuleiro_terminado(tabuleiro):
-        escreve_tabuleiro(tabuleiro)
-        jogada = pede_jogada()
-        if tabuleiro_jogada_possivel(tabuleiro, jogada):
-            tabuleiro_reduz(tabuleiro, jogada)
-            tabuleiro_preenche_aleatorio(tabuleiro)
-    escreve_tabuleiro(tabuleiro)
-    print("GAME OVERRRR!!")
-
-jogo_2048()
+    '''
+    Jogo 2048
+    :return: None
+    '''
+    t = cria_tabuleiro()
+    q = False
+    tabuleiro_adiciona_blocos_inicias(t)
+    while not(tabuleiro_terminado(t)):
+        escreve_tabuleiro(t)
+        if tabuleiro_ganhou_jogo(t) and not q:
+            w = input('Ganhou!!! Quer continuar?(S/N) -> ')
+            if w == 'N':
+                break
+            q = True
+        j = pede_jogada()
+        if tabuleiro_jogada_possivel(t, j):
+            tabuleiro_reduz(t, j)
+            tabuleiro_preenche_aleatorio(t)
