@@ -386,7 +386,7 @@ def jogo_2048():
     while not(tabuleiro_terminado(t)):
         escreve_tabuleiro(t)
         if tabuleiro_ganhou_jogo(t) and not q:
-            w = input('Ganhou!!! Quer continuar?(S/N) -> ')
+            w = input('Ganhou!!! Prima qualquer tecla para continuar ou "N" para parar -> ')
             if w == 'N':
                 break
             q = True
@@ -394,7 +394,3 @@ def jogo_2048():
         if tabuleiro_jogada_possivel(t, j):
             tabuleiro_reduz(t, j)
             tabuleiro_preenche_aleatorio(t)
-
-
-t = cria_tabuleiro()
-print(tabuleiro_jogada_possivel(t, 'hehehehehehe'))
