@@ -4,6 +4,8 @@ from random import random
 from copy import deepcopy
 from inspect import stack
 
+import time
+
 filtros = {
     "coordenadas": 
         lambda x, y: isinstance(x, int) and isinstance(y,int) and x > 0 and x <= tamanho and y > 0 and y <= tamanho,
@@ -388,3 +390,17 @@ def jogo_2048():
         if tabuleiro_jogada_possivel(t, j):
             tabuleiro_reduz(t, j)
             tabuleiro_preenche_aleatorio(t)
+            
+def benchmark(repeticoes, testes, funcao, *parametros):
+    # Repeticoes: Numero de vezes que mede o tempo
+    # Testes: Numero de vezes que corre a funcao por cada repeticao
+    # Funcao: Nome da funcao a executar
+    # Parametros: Todos os parametros
+    # EX: benchmark(4, 100, tabuleiro_reduz, tab, "S")
+    start_all = time.time()
+    for i in range(0, repeticoes):
+        start = time.time()
+        for i in range(0, testes):
+            funcao(*parametros)
+        print(time.time() - start)
+    return 'Corridos ' + str(repeticoes * testes) + ' testes, com total de ' + str(time.time() - start_all) + ' segundos'
