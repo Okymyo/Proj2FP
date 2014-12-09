@@ -394,12 +394,3 @@ def jogo_2048():
         if tabuleiro_jogada_possivel(t, j):
             tabuleiro_reduz(t, j)
             tabuleiro_preenche_aleatorio(t)
-
-
-t = cria_tabuleiro()
-escreve_tabuleiro(t)
-c = cria_coordenada(2, 2)
-escreve_tabuleiro(tabuleiro_preenche_posicao(t, c, 2))
-c = cria_coordenada(2, 4)
-escreve_tabuleiro(tabuleiro_preenche_posicao(t, c, 2))
-print(e_tabuleiro(t))
