@@ -213,19 +213,19 @@ def tabuleiro_jogada_possivel(tabuleiro, jogadas="N,S,E,W"):
     if not e_tabuleiro(tabuleiro):
         raise erro()
     disponiveis = tabuleiro_filtra_blocos(tabuleiro, filtros["disponiveis"])
+    for jogada in jogadas.split(","):
+        if not filtros["jogada"](jogada):
+            raise erro()
     for atual in disponiveis:
-        for jogada in jogadas.split(","):
-            if not filtros["jogada"](jogada):
-                raise erro()
-            blocoAtual = tabuleiro_posicao(tabuleiro, atual)
-            try:
-                x,y = coordenada_linha(atual), coordenada_coluna(atual)
-                vizinho = cria_coordenada(x + vetores[jogada]["x"], y + vetores[jogada]["y"])
-                blocoVizinho = tabuleiro_posicao(tabuleiro, vizinho)
-                if blocoVizinho == 0 or (blocoAtual == blocoVizinho):
-                    return True
-            except ValueError:
-                continue
+        blocoAtual = tabuleiro_posicao(tabuleiro, atual)
+        try:
+            x,y = coordenada_linha(atual), coordenada_coluna(atual)
+            vizinho = cria_coordenada(x + vetores[jogada]["x"], y + vetores[jogada]["y"])
+            blocoVizinho = tabuleiro_posicao(tabuleiro, vizinho)
+            if blocoVizinho == 0 or (blocoAtual == blocoVizinho):
+                return True
+        except ValueError:
+            continue
     return False
 
 def tabuleiro_filtra_blocos(tabuleiro, filtro):
@@ -394,3 +394,7 @@ def jogo_2048():
         if tabuleiro_jogada_possivel(t, j):
             tabuleiro_reduz(t, j)
             tabuleiro_preenche_aleatorio(t)
+
+
+t = cria_tabuleiro()
+print(tabuleiro_jogada_possivel(t, 'hehehehehehe'))
