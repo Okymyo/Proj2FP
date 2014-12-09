@@ -355,7 +355,7 @@ def nextMove(board,recursion_depth=3):
     :param recursion_depth: Depth do algoritmo, quantos tabuleiros tentamos prever : int
     :return: Melhor jogada, a que avalia qual da o melhor score depois de feita : string
     '''
-    def nextMoveRecur(board,depth,maxDepth,base=0.9):
+    def nextMoveRecur(board,depth,maxDepth,base=probabilidadeBlocoDois):
         bestScore = -1.
         bestMove = 0
         for m in vetores:
