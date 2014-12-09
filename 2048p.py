@@ -44,15 +44,14 @@ blocoVencedor = 2048
 def erro():
     return ValueError(stack()[1][3]+": argumentos invalidos")
 
-def cria_coordenada(x, y, override=False):
+def cria_coordenada(x, y):
     '''
     Cria nova coordenada com os parametros dados
     :param x: Linha da coordenada a criar : int
     :param y: Coluna da coordenada a criar : int
-    :param override: Caso este parametro esteja True, nunca da erro
     :return: Coordenada criada a partir dos parametros que foram dados : Coordenada
     '''
-    if not override and not filtros["coordenadas"](x, y):
+    if not filtros["coordenadas"](x, y):
         raise erro()
     return (x, y)
     
@@ -298,10 +297,10 @@ def tabuleiro_reduz(tabuleiro, jogada):
                     for y in range(tamanho, 0, -1):
                         atual = cria_coordenada(x, y)
                         blocoAtual = tabuleiro_posicao(tabuleiro, atual)
-                        # Vamos usar o override da funcao cria_coordenada para nao devolver erro
-                        # Usa-se depois o e_coordenada, e assim caso seja invalida, devolve False (em vez de erro)
-                        vizinho = cria_coordenada(x+vetores[jogada]["x"], y+vetores[jogada]["y"], True)
-                        if e_coordenada(vizinho):
+                        xVizinho = x+vetores[jogada]["x"]
+                        yVizinho = y+vetores[jogada]["y"]
+                        if 1<=xVizinho<=tamanho and 1<=yVizinho<=tamanho:
+                            vizinho = cria_coordenada(xVizinho, yVizinho)
                             blocoVizinho = tabuleiro_posicao(tabuleiro, vizinho)
                             if blocoVizinho == 0 and blocoAtual != 0:
                                 tabuleiro_preenche_posicao(tabuleiro, vizinho, blocoAtual)
@@ -319,11 +318,11 @@ def tabuleiro_reduz(tabuleiro, jogada):
         for x in iterador:
             for y in iterador:
                 atual = cria_coordenada(x, y)
-                blocoAtual = tabuleiro_posicao(tabuleiro, atual)
-                # Vamos usar o override da funcao cria_coordenada para nao devolver erro
-                # Usa-se depois o e_coordenada, e assim caso seja invalida, devolve False (em vez de erro)               
-                vizinho = cria_coordenada(x+vetores[jogada]["x"], y+vetores[jogada]["y"], True)
-                if e_coordenada(vizinho):
+                blocoAtual = tabuleiro_posicao(tabuleiro, atual)  
+                xVizinho = x+vetores[jogada]["x"]
+                yVizinho = y+vetores[jogada]["y"]
+                if 1<=xVizinho<=tamanho and 1<=yVizinho<=tamanho:
+                    vizinho = cria_coordenada(xVizinho, yVizinho)
                     blocoVizinho = tabuleiro_posicao(tabuleiro, vizinho)
                     if blocoVizinho == blocoAtual:
                         novoBloco = blocoAtual+blocoVizinho
