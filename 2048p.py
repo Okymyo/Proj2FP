@@ -7,8 +7,10 @@ from inspect import stack
 import time
 
 filtros = {
+    "noTabuleiro":
+        lambda x, y: x > 0 and x <= tamanho and y > 0 and y <= tamanho,
     "coordenadas": 
-        lambda x, y: isinstance(x, int) and isinstance(y,int) and x > 0 and x <= tamanho and y > 0 and y <= tamanho,
+        lambda x, y: isinstance(x, int) and isinstance(y,int) and filtros["noTabuleiro"],
     "coordenada": 
         lambda x: isinstance(x, tuple) and len(x) == 2 and filtros["coordenadas"](x[0], x[1]) 
         and all(isinstance(num, int) for num in x),
@@ -221,14 +223,14 @@ def tabuleiro_jogada_possivel(tabuleiro, jogadas="N,S,E,W"):
             raise erro()
     for atual in disponiveis:
         blocoAtual = tabuleiro_posicao(tabuleiro, atual)
-        try:
-            x,y = coordenada_linha(atual), coordenada_coluna(atual)
-            vizinho = cria_coordenada(x + vetores[jogada]["x"], y + vetores[jogada]["y"])
+        x,y = coordenada_linha(atual), coordenada_coluna(atual)
+        xVizinho = x + vetores[jogada]["x"]
+        yVizinho = y + vetores[jogada]["y"]
+        if filtros["noTabuleiro"](xVizinho, yVizinho):
+            vizinho = cria_coordenada(xVizinho, yVizinho)
             blocoVizinho = tabuleiro_posicao(tabuleiro, vizinho)
             if blocoVizinho == 0 or (blocoAtual == blocoVizinho):
                 return True
-        except ValueError:
-            continue
     return False
 
 def tabuleiro_filtra_blocos(tabuleiro, filtro):
@@ -299,7 +301,7 @@ def tabuleiro_reduz(tabuleiro, jogada):
                         blocoAtual = tabuleiro_posicao(tabuleiro, atual)
                         xVizinho = x+vetores[jogada]["x"]
                         yVizinho = y+vetores[jogada]["y"]
-                        if 1<=xVizinho<=tamanho and 1<=yVizinho<=tamanho:
+                        if filtros["noTabuleiro"](xVizinho, yVizinho):
                             vizinho = cria_coordenada(xVizinho, yVizinho)
                             blocoVizinho = tabuleiro_posicao(tabuleiro, vizinho)
                             if blocoVizinho == 0 and blocoAtual != 0:
@@ -321,7 +323,7 @@ def tabuleiro_reduz(tabuleiro, jogada):
                 blocoAtual = tabuleiro_posicao(tabuleiro, atual)  
                 xVizinho = x+vetores[jogada]["x"]
                 yVizinho = y+vetores[jogada]["y"]
-                if 1<=xVizinho<=tamanho and 1<=yVizinho<=tamanho:
+                if filtros["noTabuleiro"](xVizinho, yVizinho):
                     vizinho = cria_coordenada(xVizinho, yVizinho)
                     blocoVizinho = tabuleiro_posicao(tabuleiro, vizinho)
                     if blocoVizinho == blocoAtual:
