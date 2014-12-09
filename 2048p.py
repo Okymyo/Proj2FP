@@ -52,7 +52,7 @@ def cria_coordenada(x, y, override=False):
     :param override: Caso este parametro esteja True, nunca da erro
     :return: Coordenada criada a partir dos parametros que foram dados : Coordenada
     '''
-    if not filtros["coordenadas"](x, y) and not override:
+    if not override and not filtros["coordenadas"](x, y):
         raise erro()
     return (x, y)
     
