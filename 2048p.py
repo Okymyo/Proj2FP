@@ -388,7 +388,7 @@ def jogo_2048():
             if w == 'N':
                 break
             q = True
-        j = pede_jogada()
+        j = pede_jogada() #Para a utilizacao de inteligencia artificial escrever "j = nextMove(t, recursionDepth)"
         if tabuleiro_jogada_possivel(t, j):
             tabuleiro_reduz(t, j)
             tabuleiro_preenche_aleatorio(t)
