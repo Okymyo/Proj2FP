@@ -3,7 +3,6 @@
 from random import random
 from copy import deepcopy
 from inspect import stack
-
 import time
 
 filtros = {
@@ -394,11 +393,16 @@ def jogo_2048():
             tabuleiro_preenche_aleatorio(t)
             
 def benchmark(repeticoes, testes, funcao, *parametros):
-    # Repeticoes: Numero de vezes que mede o tempo
-    # Testes: Numero de vezes que corre a funcao por cada repeticao
-    # Funcao: Nome da funcao a executar
-    # Parametros: Todos os parametros
-    # EX: benchmark(4, 100, tabuleiro_reduz, tab, "S")
+    '''
+    Testa o tempo de execucao de uma determinada funcao
+    repeticoes: Numero de vezes que mede o tempo : int
+    testes: Numero de vezes que corre a funcao por cada repeticao : int
+    funcao: Nome da funcao a executar : function
+    parametros: Todos os parametros para dar a essa funcao : argument
+    return: Mensagem geral sobre os testes: string
+    EX: tab = [1337, [[8, 2, 2, 0], [4, 128, 64, 4], [32, 64, 2, 32], [16, 2, 4, 4]]]
+        print(benchmark(5, 2000, tabuleiro_reduz, tab, "S"))
+    '''
     start_all = time.time()
     for i in range(0, repeticoes):
         start = time.time()
@@ -406,6 +410,3 @@ def benchmark(repeticoes, testes, funcao, *parametros):
             funcao(*parametros)
         print(time.time() - start)
     return 'Corridos ' + str(repeticoes * testes) + ' testes, com total de ' + str(time.time() - start_all) + ' segundos'
-        
-tab = [1337, [[8, 2, 2, 0], [4, 128, 64, 4], [32, 64, 2, 32], [16, 2, 4, 4]]]
-print(benchmark(4, 100, tabuleiro_reduz, tab, "S"))
