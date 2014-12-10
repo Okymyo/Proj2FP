@@ -9,7 +9,7 @@ filtros = {
     "noTabuleiro":
         lambda x, y: x > 0 and x <= tamanho and y > 0 and y <= tamanho,
     "coordenadas": 
-        lambda x, y: isinstance(x, int) and isinstance(y,int) and filtros["noTabuleiro"],
+        lambda x, y: isinstance(x, int) and isinstance(y,int) and filtros["noTabuleiro"](x, y),
     "coordenada": 
         lambda x: isinstance(x, tuple) and len(x) == 2 and filtros["coordenadas"](x[0], x[1]) 
         and all(isinstance(num, int) for num in x),
