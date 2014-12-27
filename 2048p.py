@@ -220,16 +220,17 @@ def tabuleiro_jogada_possivel(tabuleiro, jogadas="N,S,E,W"):
     for jogada in jogadas.split(","):
         if not filtros["jogada"](jogada):
             raise erro()
-    for atual in disponiveis:
-        blocoAtual = tabuleiro_posicao(tabuleiro, atual)
-        x,y = coordenada_linha(atual), coordenada_coluna(atual)
-        xVizinho = x + vetores[jogada]["x"]
-        yVizinho = y + vetores[jogada]["y"]
-        if filtros["noTabuleiro"](xVizinho, yVizinho):
-            vizinho = cria_coordenada(xVizinho, yVizinho)
-            blocoVizinho = tabuleiro_posicao(tabuleiro, vizinho)
-            if blocoVizinho == 0 or (blocoAtual == blocoVizinho):
-                return True
+        for atual in disponiveis:
+            blocoAtual = tabuleiro_posicao(tabuleiro, atual)
+            x,y = coordenada_linha(atual), coordenada_coluna(atual)
+        
+            xVizinho = x + vetores[jogada]["x"]
+            yVizinho = y + vetores[jogada]["y"]
+            if filtros["noTabuleiro"](xVizinho, yVizinho):
+                vizinho = cria_coordenada(xVizinho, yVizinho)
+                blocoVizinho = tabuleiro_posicao(tabuleiro, vizinho)
+                if blocoVizinho == 0 or (blocoAtual == blocoVizinho):
+                    return True
     return False
 
 def tabuleiro_filtra_blocos(tabuleiro, filtro):
